@@ -1,7 +1,15 @@
 import React from "react"
+import BottomNav from "../components/shared/bottomNav";
 const Home =() =>{
     return(
-        <div>Lets Build UI</div>
+        <section className="bg-[#1f1f1f] h-[calc(100vh-7rem)] overflow-hidden flex gap-3">
+        {/*Left-Div*/}
+        <div className="flex-[3] bg-red-600"></div>
+        {/*Right-Div*/}
+        <div className="flex-[2] bg-blue-600"></div>
+        <BottomNav/>
+        </section>
+
     )
 }
 export default Home
