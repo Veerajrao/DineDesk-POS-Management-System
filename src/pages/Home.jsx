@@ -1,5 +1,5 @@
 import React from "react"
-import BottomNav from "../components/shared/bottomNav";
+import BottomNav from "../components/shared/BottomNav"
 const Home =() =>{
     return(
         <section className="bg-[#1f1f1f] h-[calc(100vh-7rem)] overflow-hidden flex gap-3">
