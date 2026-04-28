@@ -20,7 +20,7 @@ const Orders =() =>{
                     <button onClick={() => setStatus("completed")} className={`text-[#ababab] ${status === "completed" && "bg-[#383838] rounded-lg px-3 py-2"} text-lg rounded-lg px-3 py-2 font-semibold`}>Completed</button>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-6 px-14 py-4  overflow-y-scroll no-scrollbar h-[calc(120vh-5rem-5rem)]">
+            <div className="flex flex-wrap gap-6 px-14 py-4  overflow-y-scroll no-scrollbar h-screen">
                 <OrderCart/>
                 <OrderCart/>
                 <OrderCart/>
