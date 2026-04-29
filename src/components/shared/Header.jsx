@@ -5,9 +5,9 @@ import { FaBell } from "react-icons/fa";
 import logo from "../../assets/images/logo.png"
 const Header = () => {
     return(
-       <header className="flex justify-between items-center py-4 px-8 bg-[#1a1a1a]">
+       <header className="flex justify-between items-center py-2 px-8 bg-[#1a1a1a]">
         {/*logo*/}
-        <div className="flex item-center gap-1">
+        <div className="flex items-center gap-1">
             <img src={logo} className="h-20 w-15" alt="restro logo px-0 py-2"/>
             <h1 className="text-lg font-semibold text-[#f5f5f5] py-4">DineAndDesk</h1>
         </div>
