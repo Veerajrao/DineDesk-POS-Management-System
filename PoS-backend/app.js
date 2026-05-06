@@ -1,15 +1,17 @@
 require("dotenv").config();
-const express=require("express");
+const express = require("express");
 const connectDB=require("./config/database");
 const config=require("./config/config");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
 const createHttpError = require("http-errors");
-const app=express();
+const cookieParser = require("cookie-parser");
+const app = express();
 
 const PORT=config.port;
 connectDB();
 //middlewares
-app.use(express.json());
+app.use(express.json());//parse income req in json format
+app.use(cookieParser());
 
 //root ends points
 app.get("/",(req,res,next) => {
