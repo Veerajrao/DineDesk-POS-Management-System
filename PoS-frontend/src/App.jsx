@@ -5,8 +5,10 @@ import Header from "./components/shared/Header"
 function App() {
   return (
     <>
-    <Header/>
       <Router>
+        <div className="h-screen overflow-hidden flex flex-col">
+          <Header />
+          <div className="flex-1 overflow-hidden">
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/Auth" element={<Auth />}/>
@@ -15,6 +17,8 @@ function App() {
         <Route path="/menu" element={<Menu />}/>
         <Route path="*" element={<div>Not Found</div>}/>
         </Routes>
+        </div>
+        </div>
       </Router>
     </>
   )
