@@ -8,7 +8,7 @@ function App() {
       <Router>
         <div className="h-screen overflow-hidden flex flex-col">
           <Header />
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/Auth" element={<Auth />}/>
