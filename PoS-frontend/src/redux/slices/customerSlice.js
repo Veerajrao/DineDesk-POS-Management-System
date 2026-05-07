@@ -5,7 +5,7 @@ const initialState ={
     customerName: "",
     customerPhone: "",
     guests:0,
-    tableNo: ""
+    tableNo: null
 }
 
 const customerSlice = createSlice({
@@ -24,7 +24,7 @@ const customerSlice = createSlice({
             state.customerName = "",
             state.customerPhone = "",
             state.guests = 0,
-            state.tableNo = ""
+            state.tableNo = null
         },
 
         updateTable: (state, action) => {
