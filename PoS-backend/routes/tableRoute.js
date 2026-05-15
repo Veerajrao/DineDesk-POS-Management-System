@@ -1,7 +1,10 @@
 const express = require("express");
+const { addTable, getTables, updateTable } = require("../controllers/tableControllers");
 const router = express.Router();
-const { isVerifiedUser }
+const { isVerifiedUser } = require("../middleware/tokenVerification")
+ 
+router.route("/").post(isVerifiedUser , addTable);
+router.route("/").get(isVerifiedUser , getTables);
+router.route("/:id").put(isVerifiedUser , updateTable);
 
-router.route("/").post(isVerifiedUser, addTable);
-router.route("/").post(isVerifiedUser, getTable);
-router.route("/:id ").post(isVerifiedUser, addTable);
+module.exports = router;
