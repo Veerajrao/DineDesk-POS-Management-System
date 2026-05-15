@@ -5,11 +5,16 @@ const config=require("./config/config");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
 const createHttpError = require("http-errors");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const app = express();
 
 const PORT=config.port;
 connectDB();
 //middlewares
+app.use(cors({
+    credentials: true,
+    origin: ['http://localhost:5173']
+}));
 app.use(express.json());//parse income req in json format
 app.use(cookieParser());
 

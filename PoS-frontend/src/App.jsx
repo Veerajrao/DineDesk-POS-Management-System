@@ -1,13 +1,15 @@
-import { BrowserRouter as Router,Routes,Route } from "react-router-dom"
+import { BrowserRouter as Router,Routes,Route, useLocation } from "react-router-dom"
 import { Home,Auth,Orders, Tables, Menu } from "./pages"
 import Header from "./components/shared/Header"
 
-function App() {
+function Layout(){
+  
+  const location = useLocation();
+  const hideHeaderRoutes = ["/auth"];
   return (
     <>
-      <Router>
-        <div className="h-screen overflow-hidden flex flex-col">
-          <Header />
+      <div className="h-screen overflow-hidden flex flex-col">
+          {!hideHeaderRoutes.includes(location.pathname) && <Header />}
           <div className="flex-1 overflow-hidden">
         <Routes>
           <Route path="/" element={<Home />}/>
@@ -19,8 +21,15 @@ function App() {
         </Routes>
         </div>
         </div>
-      </Router>
     </>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <Layout/>
+    </Router>
   )
 }
 
