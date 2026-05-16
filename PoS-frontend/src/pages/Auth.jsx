@@ -22,7 +22,7 @@ const Auth =() =>{
             </blockquote>
             </div>
             {/*Right section*/}
-            <div className="w-1/2 min-h-screen bg-[#1a1a1a] p-10">
+            <div className="w-1/2 overflow-y-scroll h-screen no-scrollbar bg-[#1a1a1a] p-10">
             <div className="flex flex-col items-center gap-2">
                 <img src={logo} alt="DineAndDesk Logo" className="h-32 w-48 border-none"/>
                 {/*<h1 className="text-sm font-semibold text-[#f5f5f5] tracking-wide">DineDesk</h1>*/}
@@ -31,7 +31,7 @@ const Auth =() =>{
                 {isRegister ? "Employee Registration" : "Employee Login"}
             </h2>
             {/*componets*/}
-            {isRegister ? <Register/> : <Login/>}
+            {isRegister ? <Register setIsRegister={setIsRegister}/> : <Login/>}
             <div className="flex justify-center mt-6">
                 <p className="text-sm text-[#ababab]">
                     {isRegister ? "Already Have an account?" : "Don't have an account"}
