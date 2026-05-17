@@ -1,22 +1,51 @@
 import { BrowserRouter as Router,Routes,Route, useLocation } from "react-router-dom"
-import { Home,Auth,Orders, Tables, Menu } from "./pages"
+import { Home, Auth, Orders, Tables, Menu } from "./pages"
 import Header from "./components/shared/Header"
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import UseLoadData from "./hooks/useLoadData";
+import FullScreenLoader from "./components/shared/FullScreenLoader";
+//import { Route, Routes } from "react-router-dom";
+
 
 function Layout(){
   
   const location = useLocation();
+  const isLoading = UseLoadData();
   const hideHeaderRoutes = ["/auth"];
+  const { isAuth } =useSelector(state => state.user)
+
+  if(isLoading) return <FullScreenLoader/>
   return (
     <>
       <div className="h-screen overflow-hidden flex flex-col">
           {!hideHeaderRoutes.includes(location.pathname) && <Header />}
           <div className="flex-1 overflow-hidden">
         <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/Auth" element={<Auth />}/>
-          <Route path="/Orders" element={<Orders />}/>
-          <Route path="/tables" element={<Tables />} />
-        <Route path="/menu" element={<Menu />}/>
+          <Route path="/" element={
+            <ProtectedRoutes>
+              <Home />
+            </ProtectedRoutes>
+          }/>
+          <Route
+            path="/Auth"
+            element={isAuth ? <Navigate to="/" /> : <Auth />}
+          />
+          <Route path="/Orders" element={
+            <ProtectedRoutes>
+              <Orders />
+            </ProtectedRoutes>
+          }/>
+          <Route path="/tables" element={
+            <ProtectedRoutes>
+              <Tables />
+            </ProtectedRoutes>
+          } />
+        <Route path="/menu" element={
+          <ProtectedRoutes>
+            <Menu />
+          </ProtectedRoutes>
+        }/>
         <Route path="*" element={<div>Not Found</div>}/>
         </Routes>
         </div>
@@ -24,6 +53,14 @@ function Layout(){
     </>
   )
 }
+function ProtectedRoutes({children}) {
+  const { isAuth } = useSelector(state => state.user);
+  if (!isAuth){
+    return <Navigate to="/auth" />
+  }
+  return children;
+}
+
 
 function App() {
   return (
