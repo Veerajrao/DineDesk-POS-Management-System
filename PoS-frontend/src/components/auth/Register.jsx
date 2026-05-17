@@ -128,8 +128,8 @@ const Register = ({setIsRegister}) => {
                   key={role}
                   type="button"
                   onClick={() => handleRoleSelection(role)}
-                  className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] ${
-                    formData.role === role ? "bg-indigo-700" : ""
+                  className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-white ${
+                    formData.role === role ? "bg-yellow-400" : ""
                   }`}
                 >
                   {role}

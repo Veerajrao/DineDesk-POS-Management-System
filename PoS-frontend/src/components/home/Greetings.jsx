@@ -12,6 +12,18 @@ const Greetings = () => {
   }, []);
 
 
+  const hour = new Date().getHours();
+
+  let greeting = "";
+
+  if (hour < 12) {
+    greeting = "Good Morning";
+  } else if (hour < 17) {
+    greeting = "Good Afternoon";
+  } else {
+    greeting = "Good Evening";
+  }
+
   const formatDate = (date) => {
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -32,7 +44,7 @@ const Greetings = () => {
   return (
     <div className='flex justify-between items-center px-8 mt-5'>
       <div>
-        <h1 className='text-[#f5f5f5] text-2xl mb-2 font-semibold tracking-wide'>Good morning {userData.name || "Test"}</h1>
+        <h1 className='text-[#f5f5f5] text-2xl mb-2 font-semibold tracking-wide'>{greeting} {userData.name || "Test"}</h1>
         <p className='text-[#ababab] text-sm'>Give Best Services for Customer😊</p>
       </div>
       <div>

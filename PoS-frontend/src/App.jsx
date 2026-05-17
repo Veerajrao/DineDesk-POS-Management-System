@@ -4,6 +4,7 @@ import Header from "./components/shared/Header"
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import UseLoadData from "./hooks/useLoadData";
+import Dashboard from "./pages/Dashboard";
 import FullScreenLoader from "./components/shared/FullScreenLoader";
 //import { Route, Routes } from "react-router-dom";
 
@@ -46,6 +47,15 @@ function Layout(){
             <Menu />
           </ProtectedRoutes>
         }/>
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoutes>
+              <Dashboard />
+            </ProtectedRoutes>
+          }
+        />
         <Route path="*" element={<div>Not Found</div>}/>
         </Routes>
         </div>

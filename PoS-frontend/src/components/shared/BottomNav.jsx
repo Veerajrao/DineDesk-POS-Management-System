@@ -34,11 +34,17 @@ const BottomNav =()=>{
 
     const isActive = (path) => location.pathname === path;
 
+    const handleMoreClick = () => {
+        alert("This feature will be introduced in future updates.");
+    };
+
     const handleCreateOrder = () => {
     //send the data to store
     dispatch(setCustomer({name, phone, guests: guestCount}));
     navigate("/tables");
 }
+
+
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-[#262626] p-2 h-12 flex justify-around">
@@ -61,8 +67,12 @@ const BottomNav =()=>{
       >
             <MdTableRestaurant className='inline mr-2' size={22} /><p>Tables</p></button>
 
-        <button  className="flex items-center justify-center font-bold text-[#ababab]  w-[250px] rounded-[20px]"> 
-            <MdMoreVert className='inline mr-2' size={22}/><p>More</p></button>
+        <button
+            onClick={handleMoreClick}
+            className="flex items-center justify-center font-bold text-[#ababab] w-[250px] rounded-[20px]">
+            <MdMoreVert className='inline mr-2' size={22}/>
+            <p>More</p>
+            </button>
 
             <button disabled={isActive("/tables") || isActive("/menu")} onClick={openModel} className="absolute bottom-6 bg-[#F6B100] text-[#1a1a1a] rounded-full p-4 items-center"><BiSolidDish size={40}/></button>
 
