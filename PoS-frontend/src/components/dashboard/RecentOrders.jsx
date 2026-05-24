@@ -3,8 +3,8 @@ import { orders } from "../../constants";
 import { GrUpdate } from "react-icons/gr";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
-//import { getOrders, updateOrderStatus } from "../../https/index";
-//import { formatDateAndTime } from "../../utils";
+import { getOrders, updateOrderStatus } from "../../https/index";
+import { formatDateAndTime } from "../../utils";
 
 const RecentOrders = () => {
   const queryClient = useQueryClient();
@@ -16,13 +16,29 @@ const RecentOrders = () => {
   const orderStatusUpdateMutation = useMutation({
     mutationFn: ({orderId, orderStatus}) => updateOrderStatus({orderId, orderStatus}),
     onSuccess: (data) => {
-      enqueueSnackbar("Order status updated successfully!", { variant: "success" });
-      queryClient.invalidateQueries(["orders"]); // Refresh order list
+      enqueueSnackbar("Order status updated successfully!", { variant: "success"});
+      queryClient.invalidateQueries({ queryKey: ["orders"] }); //Refresh order list
     },
-    onError: () => {
+        onError: () => {
       enqueueSnackbar("Failed to update order status!", { variant: "error" });
     }
   })
+
+ /* const { data: resData, isError } = useQuery({
+        queryKey: ["orders"],
+        queryFn: async () => {
+            return await getOrders();
+        },
+        placeholderData: keepPreviousData
+    })
+
+  const orderStatusUpdateMutation = useMutation({
+    mutationFn: ({orderId, orderStatus}) => updateOrderStatus({orderId, orderStatus}),
+    onSuccess: (data) => {
+      enqueueSnackbar("Order status updated successfully!", { variant: "success" });
+      queryClient.invalidateQueries(["orders"]); // Refresh order list
+    },*/
+  //})
 
   const { data: resData, isError } = useQuery({
     queryKey: ["orders"],
@@ -70,6 +86,8 @@ const RecentOrders = () => {
                     className={`bg-[#1a1a1a] text-[#f5f5f5] border border-gray-500 p-2 rounded-lg focus:outline-none ${
                       order.orderStatus === "Ready"
                         ? "text-green-500"
+                        :  order.orderStatus === "Paid"
+                        ? "text-blue-500"
                         : "text-yellow-500"
                     }`}
                     value={order.orderStatus}
@@ -81,11 +99,14 @@ const RecentOrders = () => {
                     <option className="text-green-500" value="Ready">
                       Ready
                     </option>
+                    <option className="text-blue-500" value="Paid">
+                      Paid
+                    </option>
                   </select>
                 </td>
                 <td className="p-4">{formatDateAndTime(order.orderDate)}</td>
                 <td className="p-4">{order.items.length} Items</td>
-                <td className="p-4">Table - {order.table.tableNo}</td>
+                <td className="p-4">Table - {order?.table?.tableNo}</td>
                 <td className="p-4">₹{order.bills.totalWithTax}</td>
                 <td className="p-4">
                   {order.paymentMethod}

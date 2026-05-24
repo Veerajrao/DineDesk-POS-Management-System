@@ -1,25 +1,37 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getTotalPrice, removeAllItems } from "../../redux/slices/cartSlice";
+import {
+  getTotalPrice,
+  removeAllItems,
+} from "../../redux/slices/cartSlice";
+
 import { addOrder, updateTable } from "../../https/index";
+
 import { enqueueSnackbar } from "notistack";
+
 import { useMutation } from "@tanstack/react-query";
+
 import { removeCustomer } from "../../redux/slices/customerSlice";
+
 import Invoice from "../invoice/Invoice";
 
 const Bill = () => {
   const dispatch = useDispatch();
 
   const customerData = useSelector((state) => state.customer);
+
   const cartData = useSelector((state) => state.cart);
 
   const total = useSelector(getTotalPrice);
 
   const taxRate = 5.25;
+
   const tax = (total * taxRate) / 100;
+
   const totalPriceWithTax = total + tax;
 
   const [showInvoice, setShowInvoice] = useState(false);
+
   const [orderInfo, setOrderInfo] = useState();
 
   // PLACE ORDER
@@ -41,19 +53,20 @@ const Bill = () => {
 
       items: cartData,
 
-      table: customerData?.table?.tableId,
+      table: customerData?.table?._id,
 
       paymentMethod: "Cash",
     };
 
     console.log(orderData);
 
-    // if (!orderData.table) {
-    //   enqueueSnackbar("Table ID Missing!", {
-    //     variant: "error",
-    //   });
-    //   return;
-    // }
+    if (!orderData.table) {
+      enqueueSnackbar("Table ID Missing!", {
+        variant: "error",
+      });
+
+      return;
+    }
 
     orderMutation.mutate(orderData);
   };
@@ -102,6 +115,7 @@ const Bill = () => {
       console.log(resData);
 
       dispatch(removeCustomer());
+
       dispatch(removeAllItems());
     },
 
@@ -142,13 +156,14 @@ const Bill = () => {
         </h1>
       </div>
 
-      {/* CASH PAYMENT ONLY */}
+      {/* CASH ONLY */}
       <div className="flex items-center gap-3 px-5 mt-4">
         <button className="bg-[#383737] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold">
           Cash Payment
         </button>
       </div>
 
+      {/* BUTTONS */}
       <div className="flex items-center gap-3 px-5 mt-4">
         <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg">
           Print Receipt
@@ -163,7 +178,10 @@ const Bill = () => {
       </div>
 
       {showInvoice && (
-        <Invoice orderInfo={orderInfo} setShowInvoice={setShowInvoice} />
+        <Invoice
+          orderInfo={orderInfo}
+          setShowInvoice={setShowInvoice}
+        />
       )}
     </>
   );

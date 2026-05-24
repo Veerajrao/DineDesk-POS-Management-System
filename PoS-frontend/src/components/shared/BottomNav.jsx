@@ -47,7 +47,7 @@ const BottomNav =()=>{
 
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#262626] p-2 h-12 flex justify-around">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#262626] p-2 h-16 flex justify-around">
          <button onClick={() => navigate("/")} className={`flex items-center justify-center font-bold ${ isActive("/") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]" } w-[250px] rounded-[20px]`}>
             <IoIosHome className='inline mr-2' size={22} /><p>Home</p></button>
 

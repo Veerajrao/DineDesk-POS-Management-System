@@ -12,7 +12,7 @@ const Tables = () => {
     useEffect(() => {
       document.title = "POS | Tables"
     }, [])
-
+  
   const { data: resData, isError } = useQuery({
     queryKey: ["tables"],
     queryFn: async () => {
@@ -20,12 +20,20 @@ const Tables = () => {
     },
     placeholderData: keepPreviousData,
   });
+  
+  const filteredTables = resData?.data.data.filter((table) => {
+    if (status === "all") return true;
+
+    return table.status === status;
+  });  
+
 
   if(isError) {
     enqueueSnackbar("Something went wrong!", { variant: "error" })
   }
 
-  console.log(resData);
+  // console.log(resData);
+  // console.log(status);
 
   return (
     <section className="bg-[#1f1f1f]  h-[calc(100vh-5rem)] overflow-hidden">
@@ -46,9 +54,9 @@ const Tables = () => {
             All
           </button>
           <button
-            onClick={() => setStatus("booked")}
+            onClick={() => setStatus("Booked")}
             className={`text-[#ababab] text-lg ${
-              status === "booked" && "bg-[#383838] rounded-lg px-5 py-2"
+              status === "Booked" && "bg-[#383838] rounded-lg px-5 py-2"
             }  rounded-lg px-5 py-2 font-semibold`}
           >
             Booked
@@ -57,9 +65,10 @@ const Tables = () => {
       </div>
 
       <div className="grid grid-cols-5 gap-3 px-16 py-4 h-[650px] overflow-y-scroll scrollbar-hide">
-        {resData?.data.data.map((table) => {
+       {filteredTables?.map((table) => {
           return (
             <TableCard
+              key={table._id}
               id={table._id}
               name={table.tableNo}
               status={table.status}

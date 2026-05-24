@@ -1,69 +1,136 @@
 const createHttpError = require("http-errors");
-const Order = require("../models/orderModel")
+const Order = require("../models/orderModel");
+const { default: mongoose } = require("mongoose");
+const Table = require("../models/tableModel");
 
-const addOrder = async(req,res,next) => {
-    
-    try{
-       
-       const order = new Order(req.body);
-       await order.save();
-       res.status(201).json({success: true, message: "Order created!", data: order}); 
+const addOrder = async (req, res, next) => {
+  try {
+    const order = new Order(req.body);
+    await order.save();
+    res
+      .status(201)
+      .json({ success: true, message: "Order created!", data: order });
+  } catch (error) {
+    next(error);
+  }
+};
 
-    }catch(error){
-        next(error);
-    }
-}
+const getOrderById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-const getOrderById = async(req,res,next) => {
-    
-    try{
-
-        const order = await Order.findById(req.params.id);
-        if(!order){
-            const error = createHttpError(404, "Order not found!");
-            return next(error);
-        }
-
-        res.status(200).json({success: true, data: order});
-
-    }catch(error){
-        next(error);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const error = createHttpError(404, "Invalid id!");
+      return next(error);
     }
 
-}
-
-const getOrders = async(req,res,next) => {
-    
-    try{
-
-        const orders= await Order.find();
-        res.status(200).json({data: orders});
-
-    }catch(error){
-        next(error);
+    const order = await Order.findById(id);
+    if (!order) {
+      const error = createHttpError(404, "Order not found!");
+      return next(error);
     }
-}
 
-const updateOrder = async(req,res,next) => {
-    try{
+    res.status(200).json({ success: true, data: order });
+  } catch (error) {
+    next(error);
+  }
+};
 
-        const { orderStatus } = req.body;
-        const order = await Order.findByIdAndUpdate(
-            req.params.id,
-            {orderStatus},
-            {new: true}
-        );
+// const getOrders = async (req, res, next) => {
+//   try {
+//     const orders = await Order.find().populate("table");
+//     res.status(200).json({ data: orders });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const getOrders = async (req, res, next) => {
+  try {
 
-        if(!order){
-            const error = createHttpError(404, "Order not fond!");
-            return next(error);
-        }
+    const orders = await Order.find().populate("table");
 
-        res.status(200).json({success: true, message: "Order updated", data: order});
+    // console.log("TOTAL ORDERS:", orders.length);
+    // console.log(orders);
 
-    }catch(error){
-        next(error);
+    res.status(200).json({ data: orders });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// const updateOrder = async (req, res, next) => {
+//   try {
+//     const { orderStatus } = req.body;
+//     const { id } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       const error = createHttpError(404, "Invalid id!");
+//       return next(error);
+//     }
+
+//     const order = await Order.findByIdAndUpdate(
+//       id,
+//       { orderStatus },
+//       { new: true }
+//     );
+//     if(orderStatus === "Paid") {
+//       console.log("inside paid");
+
+//       await Table.findByIdAndUpdate(
+//           order.table,
+//           { status: "Available" }
+//       );
+//     }
+
+//     if (!order) {
+//       const error = createHttpError(404, "Order not found!");
+//       return next(error);
+//     }
+
+//     res
+//       .status(200)
+//       .json({ success: true, message: "Order updated", data: order });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const updateOrder = async (req, res, next) => {
+  try {
+    const { orderStatus } = req.body;
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
     }
-}
 
-module.exports = {addOrder,getOrderById,getOrders,updateOrder};
+    order.orderStatus = orderStatus;
+
+    await order.save();
+
+    // If paid → make table available
+    if (orderStatus === "Paid") {
+      await Table.findByIdAndUpdate(
+        order.table,
+        { status: "Available" },
+        { new: true }
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Order updated",
+      data: order,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { addOrder, getOrderById, getOrders, updateOrder };
