@@ -29,7 +29,13 @@ const userSchema = new mongoose.Schema({
     password : {
         type: String,
         required: true,
-    },
+        validate: {
+            validator: function (v) {
+                return /^(?=(?:.*\d){3,})(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(v);
+            },
+            message:"Password must contain 8 characters, 3 digits and 1 special character!",
+        },
+},
     role : {
         type: String,
         required: true,

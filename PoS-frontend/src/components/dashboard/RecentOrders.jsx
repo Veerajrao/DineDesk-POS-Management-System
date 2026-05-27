@@ -55,7 +55,8 @@ const RecentOrders = () => {
   console.log(resData?.data?.data);
 
   return (
-    <div className="container mx-auto bg-[#262626] p-4 rounded-lg">
+    <div className="container mx-auto bg-[#262626] p-4 rounded-lg overflow-hidden">
+      <div className="overflow-y-scroll h-[90vh] no-scrollbar">
       <h2 className="text-[#f5f5f5] text-xl font-semibold mb-4">
         Recent Orders
       </h2>
@@ -115,6 +116,7 @@ const RecentOrders = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ const Orders = () => {
   }
 
   return (
-    <section className="bg-[#1f1f1f]  h-[calc(100vh-5rem)] overflow-hidden">
+    <section className="bg-[#1f1f1f]  h-screen overflow-y-auto scrollbar-hide">
       <div className="flex items-center justify-between px-10 py-4">
         <div className="flex items-center gap-4">
           <BackButton />
@@ -51,13 +51,13 @@ const Orders = () => {
           <button onClick={() => setStatus("Ready")} className={`text-[#ababab] text-lg ${status === "ready" && "bg-[#383838] rounded-lg px-5 py-2"}  rounded-lg px-5 py-2 font-semibold`}>
             Ready
           </button>
-          {/* <button onClick={() => setStatus("completed")} className={`text-[#ababab] text-lg ${status === "completed" && "bg-[#383838] rounded-lg px-5 py-2"}  rounded-lg px-5 py-2 font-semibold`}>
-            Completed
-          </button> */}
+          <button onClick={() => setStatus("Paid")} className={`text-[#ababab] text-lg ${status === "Paid" && "bg-[#383838] rounded-lg px-5 py-2"}  rounded-lg px-5 py-2 font-semibold`}>
+            Paid
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 px-16 py-4 overflow-y-scroll scrollbar-hide">
+      <div className="grid grid-cols-3 gap-3 px-16 py-4">
         {
           resData?.data.data.length > 0 ? (
             filteredOrders?.map((order) => {

@@ -46,7 +46,7 @@ const Bill = () => {
       paymentMethod: "Cash",
     };
 
-    console.log(orderData);
+    //console.log(orderData);
 
     // if (!orderData.table) {
     //   enqueueSnackbar("Table ID Missing!", {

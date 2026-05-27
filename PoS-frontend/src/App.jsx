@@ -19,9 +19,9 @@ function Layout(){
   if(isLoading) return <FullScreenLoader/>
   return (
     <>
-      <div className="h-screen overflow-hidden flex flex-col">
+      <div className="h-screen overflow-y-auto flex flex-col">
           {!hideHeaderRoutes.includes(location.pathname) && <Header />}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={
             <ProtectedRoutes>

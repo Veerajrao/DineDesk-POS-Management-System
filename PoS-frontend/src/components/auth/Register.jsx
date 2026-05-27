@@ -3,6 +3,7 @@ import { register } from "../../https";
 import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 
+
 const Register = ({setIsRegister}) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,17 +13,49 @@ const Register = ({setIsRegister}) => {
     role: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // const handleChange = (e) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
+
+  const [passwordError, setPasswordError] = useState("");
 
   const handleRoleSelection = (selectedRole) => {
     setFormData({ ...formData, role: selectedRole });
   };
 
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  if (name === "name") {
+    if (!/^[A-Za-z\s]*$/.test(value)) {
+      return;
+    }
+  }
+
+  setFormData({
+    ...formData,
+    [name]: value,
+  });
+
+  if (name === "password") {
+
+  const passwordRegex =
+  /^(?=(?:.*\d){3,})(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+  if (!passwordRegex.test(value)) {
+    setPasswordError(
+      "Password must contain 8 characters, 3 digits and 1 special character"
+    );
+  } else {
+    setPasswordError("");
+  }
+}
+};
+
   const handleSubmit = (e) => {
     e.preventDefault();
     registerMutation.mutate(formData);
+
   };
 
   const registerMutation = useMutation({
@@ -115,6 +148,11 @@ const Register = ({setIsRegister}) => {
               required
             />
           </div>
+          {passwordError && (
+                <p className="text-red-500 text-sm mt-1">
+                  {passwordError}
+                </p>
+              )}
         </div>
         <div>
           <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">

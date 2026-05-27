@@ -17,7 +17,7 @@ const OrderCard = ({ key, order }) => {
               {order.customerDetails.name}
             </h1>
             <p className="text-[#ababab] text-sm">#{Math.floor(new Date(order.orderDate).getTime())} / Dine in</p>
-            <p className="text-[#ababab] text-sm">Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" /> {order.table.tableNo}</p>
+            <p className="text-[#ababab] text-sm">Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" /> {order.table?.tableNo || "N/A"}</p>
           </div>
           <div className="flex flex-col items-end gap-2">
             {order.orderStatus === "Ready" ? (

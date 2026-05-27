@@ -1,190 +1,222 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getTotalPrice,
-  removeAllItems,
-} from "../../redux/slices/cartSlice";
+import React, { useRef } from "react";
+import { motion } from "framer-motion";
+import { FaCheck } from "react-icons/fa6";
 
-import { addOrder, updateTable } from "../../https/index";
+const Invoice = ({ orderInfo, setShowInvoice }) => {
 
-import { enqueueSnackbar } from "notistack";
+  const invoiceRef = useRef(null);
 
-import { useMutation } from "@tanstack/react-query";
+  const handlePrint = () => {
 
-import { removeCustomer } from "../../redux/slices/customerSlice";
+    if (!invoiceRef.current) return;
 
-import Invoice from "../invoice/Invoice";
+    const printContent = invoiceRef.current.innerHTML;
 
-const Bill = () => {
-  const dispatch = useDispatch();
+    const WinPrint = window.open("", "", "width=900,height=650");
 
-  const customerData = useSelector((state) => state.customer);
+    WinPrint.document.write(`
+      <html>
+        <head>
+          <title>Order Receipt</title>
 
-  const cartData = useSelector((state) => state.cart);
+          <style>
 
-  const total = useSelector(getTotalPrice);
+            body{
+              font-family: Arial, sans-serif;
+              padding: 20px;
+            }
 
-  const taxRate = 5.25;
+            .receipt-container{
+              width: 300px;
+              border: 1px solid #ddd;
+              padding: 10px;
+            }
 
-  const tax = (total * taxRate) / 100;
+            h2{
+              text-align: center;
+            }
 
-  const totalPriceWithTax = total + tax;
+          </style>
 
-  const [showInvoice, setShowInvoice] = useState(false);
+        </head>
 
-  const [orderInfo, setOrderInfo] = useState();
+        <body>
+          ${printContent}
+        </body>
 
-  // PLACE ORDER
-  const handlePlaceOrder = () => {
-    const orderData = {
-      customerDetails: {
-        name: customerData.customerName,
-        phone: customerData.customerPhone,
-        guests: customerData.guests,
-      },
+      </html>
+    `);
 
-      orderStatus: "In Progress",
+    WinPrint.document.close();
 
-      bills: {
-        total: total,
-        tax: tax,
-        totalWithTax: totalPriceWithTax,
-      },
-
-      items: cartData,
-
-      table: customerData?.table?._id,
-
-      paymentMethod: "Cash",
+    WinPrint.onload = () => {
+      WinPrint.focus();
+      WinPrint.print();
+      WinPrint.close();
     };
-
-    console.log(orderData);
-
-    if (!orderData.table) {
-      enqueueSnackbar("Table ID Missing!", {
-        variant: "error",
-      });
-
-      return;
-    }
-
-    orderMutation.mutate(orderData);
   };
 
-  // ORDER MUTATION
-  const orderMutation = useMutation({
-    mutationFn: (reqData) => addOrder(reqData),
-
-    onSuccess: (resData) => {
-      const { data } = resData.data;
-
-      console.log(data);
-
-      setOrderInfo(data);
-
-      // UPDATE TABLE
-      const tableData = {
-        status: "Booked",
-        orderId: data._id,
-        tableId: data.table,
-      };
-
-      tableUpdateMutation.mutate(tableData);
-
-      enqueueSnackbar("Order Placed Successfully!", {
-        variant: "success",
-      });
-
-      setShowInvoice(true);
-    },
-
-    onError: (error) => {
-      console.log(error);
-
-      enqueueSnackbar("Failed To Place Order!", {
-        variant: "error",
-      });
-    },
-  });
-
-  // TABLE UPDATE
-  const tableUpdateMutation = useMutation({
-    mutationFn: (reqData) => updateTable(reqData),
-
-    onSuccess: (resData) => {
-      console.log(resData);
-
-      dispatch(removeCustomer());
-
-      dispatch(removeAllItems());
-    },
-
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
   return (
-    <>
-      <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">
-          Items ({cartData.length})
-        </p>
 
-        <h1 className="text-[#f5f5f5] text-md font-bold">
-          ₹{total.toFixed(2)}
-        </h1>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px]">
+
+        {/* Receipt Content */}
+
+        <div ref={invoiceRef} className="p-4">
+
+          {/* Success Icon */}
+
+          <div className="flex justify-center mb-4">
+
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1.2, opacity: 1 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 150 }}
+              className="w-12 h-12 border-8 border-green-500 rounded-full flex items-center justify-center shadow-lg bg-green-500"
+            >
+
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
+                className="text-2xl"
+              >
+                <FaCheck className="text-white" />
+              </motion.span>
+
+            </motion.div>
+
+          </div>
+
+          {/* Header */}
+
+          <h2 className="text-xl font-bold text-center mb-2">
+            Order Receipt
+          </h2>
+
+          <p className="text-gray-600 text-center">
+            Thank you for your order!
+          </p>
+
+          {/* Customer Details */}
+
+          <div className="mt-4 border-t pt-4 text-sm text-gray-700">
+
+            <p>
+              <strong>Order ID:</strong>{" "}
+              {Math.floor(new Date(orderInfo.orderDate).getTime())}
+            </p>
+
+            <p>
+              <strong>Name:</strong>{" "}
+              {orderInfo.customerDetails.name}
+            </p>
+
+            <p>
+              <strong>Phone:</strong>{" "}
+              {orderInfo.customerDetails.phone}
+            </p>
+
+            <p>
+              <strong>Guests:</strong>{" "}
+              {orderInfo.customerDetails.guests}
+            </p>
+
+          </div>
+
+          {/* Items */}
+
+          <div className="mt-4 border-t pt-4">
+
+            <h3 className="text-sm font-semibold mb-2">
+              Items Ordered
+            </h3>
+
+            <ul className="text-sm text-gray-700">
+
+              {orderInfo.items.map((item, index) => (
+
+                <li
+                  key={index}
+                  className="flex justify-between items-center text-xs mb-1"
+                >
+
+                  <span>
+                    {item.name} x{item.quantity}
+                  </span>
+
+                  <span>
+                    ₹{item.price.toFixed(2)}
+                  </span>
+
+                </li>
+
+              ))}
+
+            </ul>
+
+          </div>
+
+          {/* Bill Summary */}
+
+          <div className="mt-4 border-t pt-4 text-sm">
+
+            <p>
+              <strong>Subtotal:</strong> ₹
+              {orderInfo.bills.total.toFixed(2)}
+            </p>
+
+            <p>
+              <strong>Tax:</strong> ₹
+              {orderInfo.bills.tax.toFixed(2)}
+            </p>
+
+            <p className="text-md font-semibold">
+              <strong>Grand Total:</strong> ₹
+              {orderInfo.bills.totalWithTax.toFixed(2)}
+            </p>
+
+          </div>
+
+          {/* Payment Details */}
+
+          <div className="mb-2 mt-4 text-sm">
+
+            <p>
+              <strong>Payment Method:</strong> Cash
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Buttons */}
+
+        <div className="flex justify-between mt-4">
+
+          <button
+            onClick={handlePrint}
+            className="text-blue-500 hover:underline text-xs px-4 py-2 rounded-lg"
+          >
+            Print Receipt
+          </button>
+
+          <button
+            onClick={() => setShowInvoice(false)}
+            className="text-red-500 hover:underline text-xs px-4 py-2 rounded-lg"
+          >
+            Close
+          </button>
+
+        </div>
+
       </div>
 
-      <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">
-          Tax (5.25%)
-        </p>
+    </div>
 
-        <h1 className="text-[#f5f5f5] text-md font-bold">
-          ₹{tax.toFixed(2)}
-        </h1>
-      </div>
-
-      <div className="flex items-center justify-between px-5 mt-2">
-        <p className="text-xs text-[#ababab] font-medium mt-2">
-          Total With Tax
-        </p>
-
-        <h1 className="text-[#f5f5f5] text-md font-bold">
-          ₹{totalPriceWithTax.toFixed(2)}
-        </h1>
-      </div>
-
-      {/* CASH ONLY */}
-      <div className="flex items-center gap-3 px-5 mt-4">
-        <button className="bg-[#383737] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold">
-          Cash Payment
-        </button>
-      </div>
-
-      {/* BUTTONS */}
-      <div className="flex items-center gap-3 px-5 mt-4">
-        <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg">
-          Print Receipt
-        </button>
-
-        <button
-          onClick={handlePlaceOrder}
-          className="bg-[#f6b100] px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
-        >
-          Place Order
-        </button>
-      </div>
-
-      {showInvoice && (
-        <Invoice
-          orderInfo={orderInfo}
-          setShowInvoice={setShowInvoice}
-        />
-      )}
-    </>
   );
 };
 
-export default Bill;
+export default Invoice;

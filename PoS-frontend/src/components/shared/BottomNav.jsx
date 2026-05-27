@@ -31,17 +31,25 @@ const BottomNav =()=>{
         setGuestCount((prev) => prev - 1 );
 
     }
-
+    const [showOptions, setShowOptions] = useState(false);
     const isActive = (path) => location.pathname === path;
 
     const handleMoreClick = () => {
         alert("This feature will be introduced in future updates.");
     };
+    const [orderType, setOrderType] = useState("");
+
 
     const handleCreateOrder = () => {
     //send the data to store
-    dispatch(setCustomer({name, phone, guests: guestCount}));
-    navigate("/tables");
+    dispatch(setCustomer({name, phone, guests: guestCount,orderType}));
+    //navigate("/tables");
+    if (orderType === "Dine-In") {
+        navigate("/tables");
+    } 
+    else if (orderType === "Take Away") {
+        navigate("/menu");
+    }
 }
 
 
@@ -52,19 +60,19 @@ const BottomNav =()=>{
             <IoIosHome className='inline mr-2' size={22} /><p>Home</p></button>
 
             <button
-        onClick={() => navigate("/orders")}
-        className={`flex items-center justify-center font-bold ${
-          isActive("/orders") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
-        } w-[250px] rounded-[20px]`}
-      >
+                onClick={() => navigate("/orders")}
+                className={`flex items-center justify-center font-bold ${
+                isActive("/orders") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+                } w-[250px] rounded-[20px]`}
+            >
             <IoReorderThreeSharp className='inline mr-2' size={22}/><p>Orders</p></button>
 
             <button
-        onClick={() => navigate("/tables")}
-        className={`flex items-center justify-center font-bold ${
-          isActive("/tables") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
-        } w-[250px] rounded-[20px]`}
-      >
+                onClick={() => navigate("/tables")}
+                className={`flex items-center justify-center font-bold ${
+                isActive("/tables") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+                } w-[250px] rounded-[20px]`}
+            >
             <MdTableRestaurant className='inline mr-2' size={22} /><p>Tables</p></button>
 
         <button
@@ -74,33 +82,62 @@ const BottomNav =()=>{
             <p>More</p>
             </button>
 
-            <button disabled={isActive("/tables") || isActive("/menu")} onClick={openModel} className="absolute bottom-6 bg-[#F6B100] text-[#1a1a1a] rounded-full p-4 items-center"><BiSolidDish size={40}/></button>
+            <button disabled={isActive("/tables") || isActive("/menu")} onClick={() => setShowOptions(!showOptions)} className="absolute bottom-6 bg-[#F6B100] text-[#1a1a1a] rounded-full p-4 items-center"><BiSolidDish size={40}/></button>
+                {showOptions && (
+                <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-[#1f1f1f] p-4 rounded-xl shadow-lg flex gap-3 z-50 w-72">
+  
+                <button
+                    onClick={() => {
+                        setOrderType("Dine-In");
+                        openModel();
+                    }}
+                    className={`flex-1 py-3 rounded-lg ${
+                    orderType === "Dine-In"
+                        ? "bg-yellow-500 text-black"
+                        : "bg-[#1f1f1f] text-white"
+                    }`}
+                >
+                    Dine-In
+                </button>
 
-        <Model isOpen={isModelOpen} onClose={closeModel} title="Create Order">
-                <div>
-                    <label className="block text-[#ababab] mb-2 mt-2text-sm font-medium">Customer Name</label>
-                    <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
-                        <input value={name} onChange={(e) => setName(e.target.value)}  type="text" name="" placeholder="Enter customer name" id="" 
-                        className="bg-transparent flex-1 text-white focus:outline-none" />
-                    </div>
-                </div>
-                <div>
-                    <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">Customer Phone</label>
-                    <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
-                        <input value={phone} onChange={(e) => setPhone(e.target.value)}  type="tel" name="" placeholder="+91-99999999" id="" 
-                        className="bg-transparent flex-1 text-white focus:outline-none"/>
-                    </div>
-                </div>
-                <div>
-                    <label className="block  text-[#ababab] mb-2 mt-3 text-sm font-medium text-{#ababab]">Guest</label>
-                    <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
-                        <button onClick={decrement}  className="text-yellow-500 text-2xl">&minus;</button>
-                        <span className="text-white">{guestCount} person</span>
-                        <button onClick={increment} className="text-yellow-500 text-2xl">&#43;</button>
-                    </div>
-                </div>
-                <button onClick={(handleCreateOrder)} className="w-full bg-[#F68100] text-[#f5f5f5] rounded-lg py-3 mt-8 hover:bg-yellow-700">Create Order</button>
-            </Model>
+                <button
+                    onClick={() => {setOrderType("Take Away");openModel();}}
+                    className={`flex-1 py-3 rounded-lg ${
+                    orderType === "Take Away"
+                        ? "bg-yellow-500 text-black"
+                        : "bg-[#1f1f1f] text-white"
+                    }`}
+                >
+                    Take Away
+                </button>
+
+                </div>)}
+
+                <Model isOpen={isModelOpen} onClose={closeModel} title="Create Order">
+                        <div>
+                            <label className="block text-[#ababab] mb-2 mt-2text-sm font-medium">Customer Name</label>
+                            <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
+                                <input value={name} onChange={(e) => setName(e.target.value)}  type="text" name="" placeholder="Enter customer name" id="" 
+                                className="bg-transparent flex-1 text-white focus:outline-none" />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">Customer Phone</label>
+                            <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
+                                <input value={phone} onChange={(e) => setPhone(e.target.value)}  type="tel" name="" placeholder="+91-99999999" id="" 
+                                className="bg-transparent flex-1 text-white focus:outline-none"/>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block  text-[#ababab] mb-2 mt-3 text-sm font-medium text-{#ababab]">Guest</label>
+                            <div className="flex items-center justify-between bg-[#1f1f1f] px-4 py-3 rounded-lg">
+                                <button onClick={decrement}  className="text-yellow-500 text-2xl">&minus;</button>
+                                <span className="text-white">{guestCount} person</span>
+                                <button onClick={increment} className="text-yellow-500 text-2xl">&#43;</button>
+                            </div>
+                        </div>
+                        <button onClick={(handleCreateOrder)} className="w-full bg-[#F68100] text-[#f5f5f5] rounded-lg py-3 mt-8 hover:bg-yellow-700">Create Order</button>
+                    </Model>
     </div>
   )
 }

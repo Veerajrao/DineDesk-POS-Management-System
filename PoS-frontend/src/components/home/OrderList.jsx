@@ -19,7 +19,7 @@ const OrderList = ({ key, order }) => {
 
         <h1 className="text-[#f6b100] font-semibold border border-[#f6b100] rounded-lg p-1">
           Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" />{" "}
-          {order.table.tableNo}
+          {order.table?.tableNo || "N/A"}
         </h1>
 
         <div className="flex w-[140px] items-end gap-2">
